@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ball Sort Puzzle Solver - Find Step-by-Step Solutions</title>
+    <meta name="description" content="Use this Ball Sort Puzzle Solver guide to plan moves, understand tube patterns, and solve color sorting levels faster.">
+    <link rel="canonical" href="https://curiohole.com/ball-sort-puzzle-solver.html">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html">Curiohole</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="index.html">Games</a>
+        <a href="ball-sort-puzzle/">Ball Sort Puzzle</a>
+        <a href="ball-sort-puzzle-solver.html">Solver</a>
+        <a href="how-to-play-ball-sort-puzzle.html">How to Play</a>
+      </nav>
+    </header>
+
+    <main class="simple-page">
+      <p class="eyebrow">Solver tool</p>
+      <h1>Ball Sort Puzzle Solver</h1>
+      <p class="hero-text">Plan your next moves when you are stuck. This first version helps you describe a level and get practical solving steps.</p>
+
+      <section class="page-section">
+        <h2>Describe Your Puzzle</h2>
+        <p>Enter each tube from bottom to top. Use commas between colors and one tube per line.</p>
+        <div class="tool-box">
+          <textarea id="solverInput" rows="7">red,blue,red,blue
+blue,red,blue,red
+empty
+empty</textarea>
+          <button id="solverBtn" type="button">Generate Solving Tips</button>
+          <div id="solverOutput" class="output-box">Your solving tips will appear here.</div>
+        </div>
+      </section>
+
+      <section class="page-section">
+        <h2>How the Solver Helps</h2>
+        <ul>
+          <li>Find empty tubes you can use as temporary space.</li>
+          <li>Identify colors that are blocking each other.</li>
+          <li>Choose moves that reveal hidden matching balls.</li>
+        </ul>
+        <p>A full automatic solver will be added later. For now, this page targets the search intent of players who need strategy and step-by-step help.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p><a href="ball-sort-puzzle/">Play Ball Sort Puzzle Online</a></p>
+    </footer>
+
+    <script>
+      const input = document.getElementById("solverInput");
+      const output = document.getElementById("solverOutput");
+      document.getElementById("solverBtn").addEventListener("click", () => {
+        const lines = input.value.split("\n").map((line) => line.trim()).filter(Boolean);
+        const emptyCount = lines.filter((line) => line.toLowerCase() === "empty").length;
+        const colors = lines
+          .filter((line) => line.toLowerCase() !== "empty")
+          .flatMap((line) => line.split(",").map((item) => item.trim().toLowerCase()).filter(Boolean));
+        const unique = [...new Set(colors)];
+        output.innerHTML = `
+          <strong>Quick analysis</strong><br>
+          Tubes: ${lines.length}. Empty tubes: ${emptyCount}. Colors: ${unique.length}.<br><br>
+          Suggested approach:<br>
+          1. Keep at least one empty tube open for temporary moves.<br>
+          2. Pick one color and expose all balls of that color first.<br>
+          3. Avoid placing a different color on top of a nearly solved tube.<br>
+          4. Use undo in the game if a move blocks your only empty tube.
+        `;
+      });
+    </script>
+  </body>
+</html>

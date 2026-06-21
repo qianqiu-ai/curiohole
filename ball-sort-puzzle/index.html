@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ball Sort Puzzle Online - Play Free Color Sorting Game</title>
+    <meta name="description" content="Play Ball Sort Puzzle online for free. Sort colored balls into matching tubes in your browser with no download or login required.">
+    <link rel="canonical" href="https://curiohole.com/ball-sort-puzzle/">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="../styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoGame",
+        "name": "Ball Sort Puzzle Online",
+        "description": "A free browser-based color sorting puzzle game.",
+        "genre": ["Puzzle", "Logic game"],
+        "playMode": "SinglePlayer",
+        "applicationCategory": "Game"
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="../index.html">Curiohole</a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="../index.html">Games</a>
+        <a href="../ball-sort-puzzle/">Ball Sort Puzzle</a>
+        <a href="../ball-sort-puzzle-solver.html">Solver</a>
+        <a href="../how-to-play-ball-sort-puzzle.html">How to Play</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Free browser puzzle game</p>
+          <h1>Ball Sort Puzzle Online</h1>
+          <p class="hero-text">Sort the colored balls into matching tubes. Play free in your browser with no download, no login, and no app install.</p>
+        </div>
+        <div class="game-panel" aria-label="Ball Sort Puzzle game">
+          <div class="game-topbar">
+            <div>
+              <span class="stat-label">Level</span>
+              <strong id="levelLabel">1</strong>
+            </div>
+            <div>
+              <span class="stat-label">Moves</span>
+              <strong id="movesLabel">0</strong>
+            </div>
+            <div>
+              <span class="stat-label">Time</span>
+              <strong id="timeLabel">00:00</strong>
+            </div>
+          </div>
+
+          <div id="gameBoard" class="game-board" aria-live="polite"></div>
+
+          <div class="controls">
+            <button id="restartBtn" type="button">Restart</button>
+            <button id="undoBtn" type="button">Undo</button>
+            <button id="newGameBtn" type="button">New Game</button>
+          </div>
+
+          <p id="gameMessage" class="game-message">Tap a tube, then tap another tube to move the top ball.</p>
+          <div class="tutorial-box" aria-label="Beginner guide">
+            <div>
+              <strong>First move:</strong>
+              <span id="hintText">Tap Tube 1, then tap Tube 3.</span>
+            </div>
+            <button id="hintBtn" type="button">Show Next Hint</button>
+          </div>
+          <div class="quick-rules" aria-label="Quick game rules">
+            <strong>Goal:</strong> group balls by color so each tube has one color only.
+            <ol>
+              <li>Tap a tube with balls to select its top ball.</li>
+              <li>Tap an empty tube or a tube with the same top color.</li>
+              <li>Use Undo if a move blocks your next step.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <article>
+          <h2>What Is Ball Sort Puzzle?</h2>
+          <p>Ball Sort Puzzle is a simple logic game where each tube holds a stack of colored balls. Your goal is to move the balls until every tube contains only one color.</p>
+        </article>
+        <article>
+          <h2>How to Play Ball Sort Puzzle Online</h2>
+          <p>Select a tube to pick the top ball, then select another tube. You can move a ball into an empty tube or onto a ball with the same color.</p>
+        </article>
+        <article>
+          <h2>Game Features</h2>
+          <ul>
+            <li>Free online ball sorting game</li>
+            <li>No download or account required</li>
+            <li>Five beginner-friendly levels</li>
+            <li>Undo, restart, moves, and timer</li>
+          </ul>
+        </article>
+        <article>
+          <h2>Tips to Solve Ball Sort Puzzle</h2>
+          <p>Keep at least one tube empty when possible. Avoid burying a color under too many different balls, and use empty tubes to expose the colors you need.</p>
+        </article>
+      </section>
+
+      <section class="link-band">
+        <div>
+          <h2>Stuck on a level?</h2>
+          <p>Use the Ball Sort Puzzle Solver page to plan moves and understand common solving patterns.</p>
+        </div>
+        <a class="button-link" href="../ball-sort-puzzle-solver.html">Try the Solver</a>
+      </section>
+
+      <section class="faq">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Is Ball Sort Puzzle free?</summary>
+          <p>Yes. This version is free to play in your browser.</p>
+        </details>
+        <details>
+          <summary>Can I play Ball Sort Puzzle without downloading?</summary>
+          <p>Yes. The game runs directly on the web page, so you do not need to install an app.</p>
+        </details>
+        <details>
+          <summary>How do you solve Ball Sort Puzzle?</summary>
+          <p>Move balls so each tube contains balls of one color only. Use empty tubes to temporarily hold balls and reveal blocked colors.</p>
+        </details>
+        <details>
+          <summary>Can I undo a move?</summary>
+          <p>Yes. The Undo button reverses your latest move.</p>
+        </details>
+        <details>
+          <summary>Does Ball Sort Puzzle work on mobile?</summary>
+          <p>Yes. The game uses tap controls and adjusts to small screens.</p>
+        </details>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Curiohole. Free relaxing browser games you can play instantly.</p>
+    </footer>
+
+    <div id="winDialog" class="dialog" role="dialog" aria-modal="true" aria-labelledby="winTitle" hidden>
+      <div class="dialog-card">
+        <h2 id="winTitle">Level Complete!</h2>
+        <p id="winText">You solved the level.</p>
+        <div class="dialog-actions">
+          <button id="nextLevelBtn" type="button">Next Level</button>
+          <button id="dialogRestartBtn" type="button">Restart</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../game.js"></script>
+  </body>
+</html>
