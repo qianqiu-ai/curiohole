@@ -315,6 +315,10 @@ button:disabled {
   margin-top: 32px;
 }
 
+.home-section {
+  margin-top: 24px;
+}
+
 .game-card {
   align-items: center;
   background: var(--panel);
