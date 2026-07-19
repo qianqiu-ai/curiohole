@@ -693,6 +693,87 @@ export default function App() {
                       : selectedGame?.whyYouWillLikeIt}
                   </p>
                 </div>
+
+                {selectedGame?.seoContent && (
+                  <div className={`border-t pt-6 space-y-6 ${styles.border}`}>
+                    <section className="space-y-3">
+                      <h2 className={`text-lg font-display font-bold ${styles.textTitle}`}>
+                        {selectedGame.name} Online
+                      </h2>
+                      <p className={`text-sm leading-7 ${styles.textMuted}`}>
+                        {selectedGame.seoContent.overview}
+                      </p>
+                    </section>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <section className={`rounded-xl border p-4 space-y-3 ${
+                        theme === "light" ? "bg-slate-50 border-slate-100" : "bg-gray-950/40 border-gray-900"
+                      }`}>
+                        <h3 className={`text-sm font-display font-bold ${styles.textTitle}`}>
+                          Game Rules
+                        </h3>
+                        <ul className={`space-y-2 text-sm leading-relaxed ${styles.textMuted}`}>
+                          {selectedGame.seoContent.rules.map((rule) => (
+                            <li key={rule} className="flex gap-2">
+                              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-[#00ffcc] shrink-0" />
+                              <span>{rule}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+
+                      <section className={`rounded-xl border p-4 space-y-3 ${
+                        theme === "light" ? "bg-slate-50 border-slate-100" : "bg-gray-950/40 border-gray-900"
+                      }`}>
+                        <h3 className={`text-sm font-display font-bold ${styles.textTitle}`}>
+                          Tips and Strategy
+                        </h3>
+                        <ul className={`space-y-2 text-sm leading-relaxed ${styles.textMuted}`}>
+                          {selectedGame.seoContent.tips.map((tip) => (
+                            <li key={tip} className="flex gap-2">
+                              <span className="mt-2 h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" />
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    </div>
+
+                    {selectedGame.seoContent.sections.map((section) => (
+                      <section key={section.title} className="space-y-2">
+                        <h2 className={`text-base font-display font-bold ${styles.textTitle}`}>
+                          {section.title}
+                        </h2>
+                        <p className={`text-sm leading-7 ${styles.textMuted}`}>
+                          {section.body}
+                        </p>
+                      </section>
+                    ))}
+
+                    <section className="space-y-3">
+                      <h2 className={`text-base font-display font-bold ${styles.textTitle}`}>
+                        Ball Sort Puzzle FAQ
+                      </h2>
+                      <div className="space-y-3">
+                        {selectedGame.seoContent.faqs.map((faq) => (
+                          <details
+                            key={faq.question}
+                            className={`rounded-xl border p-4 ${
+                              theme === "light" ? "bg-slate-50 border-slate-100" : "bg-gray-950/40 border-gray-900"
+                            }`}
+                          >
+                            <summary className={`cursor-pointer text-sm font-semibold ${styles.textTitle}`}>
+                              {faq.question}
+                            </summary>
+                            <p className={`mt-3 text-sm leading-relaxed ${styles.textMuted}`}>
+                              {faq.answer}
+                            </p>
+                          </details>
+                        ))}
+                      </div>
+                    </section>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-6">

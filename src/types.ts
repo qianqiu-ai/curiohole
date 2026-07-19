@@ -22,6 +22,19 @@ export interface Game {
   icon: string; // Name of Lucide icon
   howToPlay: string;
   whyYouWillLikeIt: string;
+  seoContent?: {
+    overview: string;
+    rules: string[];
+    tips: string[];
+    sections: {
+      title: string;
+      body: string;
+    }[];
+    faqs: {
+      question: string;
+      answer: string;
+    }[];
+  };
 }
 
 export interface UserProgress {
