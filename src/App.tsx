@@ -32,13 +32,28 @@ const LIVE_GAME_PATHS: Record<string, string> = {
   "ball-sort-puzzle": "/games/ball-sort-puzzle/",
 };
 
+type InfoPageId = "about" | "privacy" | "terms";
+type ActiveTab = "home" | "favorites" | "recently-played" | InfoPageId;
+
+const INFO_PAGE_PATHS: Record<InfoPageId, string> = {
+  about: "/about",
+  privacy: "/privacy",
+  terms: "/terms",
+};
+
 const getInitialGameId = () => {
   const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
   return Object.entries(LIVE_GAME_PATHS).find(([, path]) => path.replace(/\/+$/, "") === currentPath)?.[0] || null;
 };
 
+const getInitialTab = (): ActiveTab => {
+  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const infoPage = Object.entries(INFO_PAGE_PATHS).find(([, path]) => path === currentPath)?.[0] as InfoPageId | undefined;
+  return infoPage || "home";
+};
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<"home" | "favorites" | "recently-played" | "about">("home");
+  const [activeTab, setActiveTab] = useState<ActiveTab>(getInitialTab);
   const [selectedGameId, setSelectedGameId] = useState<string | null>(getInitialGameId);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
@@ -88,8 +103,10 @@ export default function App() {
 
   useEffect(() => {
     const handlePopState = () => {
-      setSelectedGameId(getInitialGameId());
-      setIsPlaying(Boolean(getInitialGameId()));
+      const gameId = getInitialGameId();
+      setSelectedGameId(gameId);
+      setActiveTab(gameId ? "home" : getInitialTab());
+      setIsPlaying(Boolean(gameId));
       setLatestResult(null);
     };
 
@@ -179,6 +196,21 @@ export default function App() {
     }
   };
 
+  const handleNavigateTab = (tabId: ActiveTab) => {
+    setActiveTab(tabId);
+    setSelectedGameId(null);
+    setIsPlaying(false);
+    setLatestResult(null);
+
+    const nextPath = tabId === "home" || tabId === "favorites" || tabId === "recently-played"
+      ? "/"
+      : INFO_PAGE_PATHS[tabId];
+
+    if (window.location.pathname !== nextPath) {
+      window.history.pushState({}, "", nextPath);
+    }
+  };
+
   const handlePlayGame = () => {
     setIsPlaying(true);
     setLatestResult(null);
@@ -249,6 +281,74 @@ export default function App() {
   };
 
   const selectedGame = GAMES_DB.find((g) => g.id === selectedGameId);
+
+  const infoPageContent: Record<InfoPageId, {
+    title: string;
+    intro: string;
+    sections: { title: string; body: string }[];
+  }> = {
+    about: {
+      title: "About CurioHole",
+      intro:
+        "CurioHole is a small collection of quick browser games made for short breaks, light mental warmups, and relaxing play. The site is designed to be simple: open a game, understand it quickly, and start playing without installing anything.",
+      sections: [
+        {
+          title: "What we build",
+          body:
+            "We focus on tiny games that work well in a browser: logic puzzles, visual pattern games, reaction challenges, and casual party-style ideas. Ball Sort Puzzle is the first live game, and more games can be added to the same portal over time."
+        },
+        {
+          title: "How CurioHole works",
+          body:
+            "The current games run directly in your browser. You do not need to download an app, create an account, or pay before playing. Basic preferences such as theme, language, favorites, and recent games may be stored locally in your browser."
+        }
+      ]
+    },
+    privacy: {
+      title: "Privacy Policy",
+      intro:
+        "CurioHole is built to be lightweight and low-friction. The current version does not require user accounts, email addresses, passwords, or payment information.",
+      sections: [
+        {
+          title: "Information stored in your browser",
+          body:
+            "CurioHole may use local browser storage to remember display settings, favorite games, recent games, streaks, and high scores. This data stays on your device unless your browser or device syncs it through services you control."
+        },
+        {
+          title: "Analytics and advertising",
+          body:
+            "The current site may be updated in the future to use privacy-conscious analytics or advertising tools. If those tools are added, this policy should be updated to explain what is collected and why."
+        },
+        {
+          title: "Third-party links",
+          body:
+            "CurioHole may link to third-party websites or platforms. Their privacy practices are controlled by their own policies, not by CurioHole."
+        }
+      ]
+    },
+    terms: {
+      title: "Terms of Use",
+      intro:
+        "By using CurioHole, you agree to use the website and games for personal entertainment and casual learning purposes.",
+      sections: [
+        {
+          title: "Free browser games",
+          body:
+            "CurioHole provides lightweight browser games on an as-is basis. We try to keep the site available and working, but we do not guarantee that every game or feature will always be uninterrupted or error-free."
+        },
+        {
+          title: "Acceptable use",
+          body:
+            "Please do not misuse the site, attempt to disrupt the service, copy the site in a misleading way, or use automated traffic that harms performance for other visitors."
+        },
+        {
+          title: "Changes to the site",
+          body:
+            "CurioHole may update, remove, rename, or add games and pages over time. These terms may also be updated as the site grows."
+        }
+      ]
+    }
+  };
 
   // Group games dynamically into the three user-friendly categories
   const categoriesWithGames = [
@@ -410,15 +510,13 @@ export default function App() {
               { id: "favorites", label: getTranslation("favorites"), icon: <Heart className="w-4 h-4 text-[#ff007f]" /> },
               { id: "recently-played", label: getTranslation("recentlyPlayed"), icon: <Clock className="w-4 h-4 text-blue-400" /> },
               { id: "about", label: getTranslation("about"), icon: <Info className="w-4 h-4" /> },
+              { id: "privacy", label: getTranslation("privacy"), icon: <Info className="w-4 h-4" /> },
+              { id: "terms", label: getTranslation("terms"), icon: <Info className="w-4 h-4" /> },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id as any);
-                  setSelectedGameId(null);
-                  if (window.location.pathname !== "/") {
-                    window.history.pushState({}, "", "/");
-                  }
+                  handleNavigateTab(tab.id as ActiveTab);
                   setIsSidebarOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all text-left cursor-pointer ${
@@ -547,7 +645,15 @@ export default function App() {
         <div className={`hidden md:flex justify-between items-center pb-2 border-b ${styles.border}`}>
           <div>
             <h1 className={`text-xl font-display font-bold ${styles.textTitle}`}>
-              {selectedGameId ? selectedGame?.name : activeTab === "home" ? `${getTranslation("brandName")} 🧪` : activeTab.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")}
+              {selectedGameId
+                ? selectedGame?.name
+                : activeTab === "home"
+                ? `${getTranslation("brandName")} 🧪`
+                : activeTab === "favorites"
+                ? getTranslation("favorites")
+                : activeTab === "recently-played"
+                ? getTranslation("recentlyPlayed")
+                : infoPageContent[activeTab].title}
             </h1>
             <p className={`text-xs mt-1 ${styles.textMuted}`}>
               {selectedGameId 
@@ -1139,37 +1245,32 @@ export default function App() {
               </div>
             )}
 
-            {/* About / Lab info view */}
-            {activeTab === "about" && (
-              <div className={`rounded-2xl border p-6 md:p-8 space-y-6 max-w-2xl mx-auto ${styles.card}`}>
+            {/* Trust and legal info pages */}
+            {(activeTab === "about" || activeTab === "privacy" || activeTab === "terms") && (
+              <div className={`rounded-2xl border p-6 md:p-8 space-y-7 max-w-3xl mx-auto ${styles.card}`}>
                 <div className="space-y-3 text-center md:text-left">
                   <div className="w-14 h-14 bg-[#00ffcc]/10 border border-[#00ffcc]/30 rounded-2xl flex items-center justify-center text-[#00ffcc] mx-auto md:mx-0 shadow-lg">
-                    🧪
+                    {activeTab === "about" ? "🧪" : activeTab === "privacy" ? "🔒" : "📄"}
                   </div>
-                  <h3 className={`text-xl font-display font-bold ${styles.textTitle}`}>{getTranslation("aboutTitle")}</h3>
+                  <h2 className={`text-2xl font-display font-bold ${styles.textTitle}`}>
+                    {infoPageContent[activeTab].title}
+                  </h2>
                   <p className={`text-sm leading-relaxed ${styles.textMuted}`}>
-                    {getTranslation("aboutText")}
+                    {infoPageContent[activeTab].intro}
                   </p>
                 </div>
 
-                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t ${styles.border}`}>
-                  <div className={`p-4 rounded-xl border ${styles.bgSubtle}`}>
-                    <h4 className={`font-display font-semibold text-xs uppercase tracking-wide ${styles.textTitle}`}>
-                      {getTranslation("offlineTitle")}
-                    </h4>
-                    <p className={`text-xs mt-2 leading-relaxed ${styles.textMuted}`}>
-                      {getTranslation("offlineText")}
-                    </p>
-                  </div>
-
-                  <div className={`p-4 rounded-xl border ${styles.bgSubtle}`}>
-                    <h4 className={`font-display font-semibold text-xs uppercase tracking-wide ${styles.textTitle}`}>
-                      {getTranslation("noTrackingTitle")}
-                    </h4>
-                    <p className={`text-xs mt-2 leading-relaxed ${styles.textMuted}`}>
-                      {getTranslation("noTrackingText")}
-                    </p>
-                  </div>
+                <div className={`space-y-4 pt-5 border-t ${styles.border}`}>
+                  {infoPageContent[activeTab].sections.map((section) => (
+                    <section key={section.title} className={`p-5 rounded-xl border ${styles.bgSubtle}`}>
+                      <h3 className={`font-display font-semibold text-sm ${styles.textTitle}`}>
+                        {section.title}
+                      </h3>
+                      <p className={`text-sm mt-2 leading-7 ${styles.textMuted}`}>
+                        {section.body}
+                      </p>
+                    </section>
+                  ))}
                 </div>
 
                 <div className="text-center pt-6 text-xs text-gray-500 font-mono">
